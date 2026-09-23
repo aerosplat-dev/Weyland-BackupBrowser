@@ -343,6 +343,37 @@ Per the project memory, a live page saves `settings.json`, so the relevant field
 before the run and any side effects are reported. Open also rewrites the character's card through
 core's normal `openCharacterChat` save, which is expected core behaviour.
 
+## Refinements from planning (2026-09-23)
+
+Found while writing the implementation plan (`2026-09-23-backup-browser-plan.md`). They take
+precedence over the sections above where they differ.
+
+- **Header privacy is a hard rule.** On this deployment a backup's header carries Weyland's
+  decoded master prompt (`chat_metadata.variables.ravteg`, about 45k characters) and about 256
+  chat variables.
+  - Only `user_name`, `character_name`, `create_date` and `integrity` ever leave the parser.
+  - Nothing else from a header, and no raw backup text, is ever rendered, logged, cached or offered
+    as a download.
+  - Unit tests and the source-scan test enforce this.
+- **The kill switch doesn't apply.** Weyland's QR kill switch (`ExtCheck`) matches three exact
+  extension names, none of which is this one.
+- **Unknown status also confirms.** While a character's current chats are still loading, or if
+  loading failed, Restore asks for the same inline confirmation as **Exists**.
+- **Import's `character_name` is sanitized** with the ported `sanitize-filename`. Core uses it
+  unsanitized as a path segment.
+- **Data Maid finalize waits for the restore queue to go idle,** so a restore still running after
+  the popup closes keeps a valid token.
+- **Core modules are imported by absolute URL** (`/script.js`, `/scripts/welcome-screen.js`).
+  Core's `index.html` sets `<base href="/">`, so these are the same module instances, and the
+  import works from either extension tree.
+- **Opening a chat saves it.** The Weyland QR writes chat variables on every chat open, so a save
+  (and a backup) follows. On a character at the 50-backup cap that prunes its oldest backup. The
+  live test is therefore split across characters:
+  - **Belle:** Exists confirm and restore.
+  - **Briar:** stale-pointer Open, below the cap.
+  - **Muse:** valid-pointer Open, below the cap.
+  - **Cerberus Sisters:** browse and preview. Open only if the user keeps that restore.
+
 ## Open decisions
 
 - Whether the live test's Cerberus Sisters restore is kept (the user may want that chat back) or
