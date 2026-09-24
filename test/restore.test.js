@@ -67,6 +67,20 @@ test('a throwing listener does not break the queue', async () => {
     assert.equal(queue.isBusy(), false);
 });
 
+test('a duplicate id is rejected without disturbing the queued job', async () => {
+    const queue = createRestoreQueue();
+    const gate = deferred();
+    let secondRan = false;
+    const first = queue.enqueue('a', () => gate.promise);
+    await assert.rejects(queue.enqueue('a', async () => { secondRan = true; }), /already queued/);
+    assert.equal(queue.has('a'), true);
+    assert.equal(queue.isBusy(), true);
+    gate.resolve('first');
+    assert.equal(await first, 'first');
+    assert.equal(secondRan, false);
+    assert.equal(queue.isBusy(), false);
+});
+
 test('buildImportForm sends the backup bytes the way core import expects', async () => {
     const blob = new Blob(['{"user_name":"Rob"}\n{"mes":"é"}']);
     const form = buildImportForm({
@@ -166,4 +180,11 @@ test('restoreSnapshot never imports a pruned or unreadable backup', async () => 
     const unreadable = setup({ read: { status: 'ok', blob: new Blob(['not json']) } });
     assert.deepEqual(await restoreSnapshot(unreadable.deps), { status: 'unreadable' });
     assert.ok(!unreadable.calls.some((call) => call[0] === 'fetch'));
+});
+
+test('restoreSnapshot reports import network failures as failed', async () => {
+    assert.deepEqual(
+        await restoreSnapshot(setup({ importResponse: () => { throw new Error('offline'); } }).deps),
+        { status: 'failed', reason: 'offline' },
+    );
 });
