@@ -55,7 +55,7 @@ live check uses Playwright.
   - A backup's first line carries Weyland's decoded master prompt
     (`chat_metadata.variables.ravteg`, about 45k characters on this deployment) and about 256
     chat variables.
-  - Only `user_name`, `character_name`, `create_date` and `chat_metadata.integrity` may leave the
+  - Only `user_name` (or its legacy alias, the top-level `name`), `character_name`, `create_date` and `chat_metadata.integrity` may leave the
     parser.
   - Never render, log, cache or offer a download of any other header content or of raw backup
     text.

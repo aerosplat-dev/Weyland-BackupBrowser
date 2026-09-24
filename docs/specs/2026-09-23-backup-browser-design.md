@@ -351,7 +351,7 @@ precedence over the sections above where they differ.
 - **Header privacy is a hard rule.** On this deployment a backup's header carries Weyland's
   decoded master prompt (`chat_metadata.variables.ravteg`, about 45k characters) and about 256
   chat variables.
-  - Only `user_name`, `character_name`, `create_date` and `integrity` ever leave the parser.
+  - Only `user_name` (or its legacy alias, the top-level `name`), `character_name`, `create_date` and `integrity` ever leave the parser.
   - Nothing else from a header, and no raw backup text, is ever rendered, logged, cached or offered
     as a download.
   - Unit tests and the source-scan test enforce this.
