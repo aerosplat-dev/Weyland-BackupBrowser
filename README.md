@@ -2,7 +2,7 @@
 
 Browse the automatic chat backups SillyTavern keeps, and restore any of them as a new chat.
 
-Open the welcome screen (no chat open) and select **Backups**, next to **Temporary Chat**.
+Open the welcome screen (no chat open) and select the box icon (**Chat backups**) right after **Temporary Chat**.
 
 - Pick a character to see its backups grouped by original chat, tagged **Deleted**,
   **Exists** or **Restored**.

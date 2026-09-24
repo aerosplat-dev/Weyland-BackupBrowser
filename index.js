@@ -96,8 +96,7 @@ function init() {
     const { t } = SillyTavern.getContext();
     installWelcomeButton({
         chatElement,
-        label: t`Backups`,
-        title: t`Browse and restore chat backups`,
+        title: t`Chat backups`,
         onClick: () => void handleOpenBrowser(),
     });
 }

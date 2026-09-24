@@ -5,6 +5,11 @@
     flex-direction: column;
 }
 
+/* Core sizes large popups to the chat column; the two panes need more room on desktop. */
+.popup.large_dialogue_popup:has(.wbb-root) {
+    width: min(1100px, 90dvw);
+}
+
 .wbb-root {
     display: flex;
     flex: 1 1 auto;
@@ -16,10 +21,11 @@
 
 .wbb-notice {
     margin: 0;
-    padding: 6px 10px;
+    padding: 4px 10px;
     border: 1px solid var(--SmartThemeBorderColor);
     border-radius: 6px;
-    font-size: calc(var(--mainFontSize) * 0.9);
+    font-size: calc(var(--mainFontSize) * 0.8);
+    line-height: 1.35;
 }
 
 .wbb-status-box {
@@ -168,9 +174,20 @@
     border-color: var(--SmartThemeQuoteColor);
 }
 
+.wbb-group-file {
+    flex: 1 0 100%;
+    min-width: 0;
+    overflow: hidden;
+    font-size: calc(var(--mainFontSize) * 0.8);
+    opacity: 0.75;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Meta on the left, buttons on the right; everything else spans the row. */
 .wbb-snapshot {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: 4px 10px;
     padding: 4px 0;
@@ -181,7 +198,7 @@
 }
 
 .wbb-snapshot-meta {
-    flex: 1 1 200px;
+    min-width: 0;
 }
 
 .wbb-actions {
@@ -190,7 +207,12 @@
 }
 
 .wbb-excerpt {
-    flex: 1 0 100%;
+    display: -webkit-box;
+    grid-column: 1 / -1;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     font-style: italic;
     opacity: 0.85;
     overflow-wrap: anywhere;
@@ -199,7 +221,7 @@
 
 .wbb-row-status {
     display: flex;
-    flex: 1 0 100%;
+    grid-column: 1 / -1;
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
@@ -211,7 +233,7 @@
 }
 
 .wbb-note {
-    flex: 1 0 100%;
+    grid-column: 1 / -1;
     margin: 4px 0 0;
     padding: 6px 8px;
     border-left: 3px solid var(--SmartThemeQuoteColor);
@@ -271,6 +293,15 @@
 
     .wbb-back {
         display: inline-flex;
+    }
+
+    .wbb-older {
+        margin-left: 0;
+    }
+
+    /* Icon-only row buttons keep each snapshot on one line; Confirm restore keeps its words. */
+    .wbb-snapshot .wbb-actions .menu_button:not(.wbb-confirming) span {
+        display: none;
     }
 
     /* Keyed on data-view: list every value each rule applies to. */

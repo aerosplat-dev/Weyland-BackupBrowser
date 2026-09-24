@@ -167,8 +167,8 @@ before adding.
 A native `Popup` (`POPUP_TYPE.TEXT`, `large: true`, `wide: true`, OK button labelled **Close**).
 There's no custom positioning, portal or `position: fixed`.
 
-- **Notice line (top):** "SillyTavern keeps only the latest 50 saves per character. Chatting with a
-  character pushes its oldest backups out, so restore what you need first."
+- **Notice line (top):** "Only the latest 50 saves per character are kept. Restore what you need
+  before chatting again." (Shortened on 2026-09-24 so it fits in two lines on a phone.)
 - **Left pane, characters:** only characters with at least one matched backup, sorted by newest
   backup. Each row shows the avatar thumbnail (`getThumbnailUrl('avatar', avatar)`), name, number
   of backups, and the newest backup's time.
