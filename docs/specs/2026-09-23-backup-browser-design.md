@@ -359,6 +359,10 @@ precedence over the sections above where they differ.
   extension names, none of which is this one.
 - **Unknown status also confirms.** While a character's current chats are still loading, or if
   loading failed, Restore asks for the same inline confirmation as **Exists**.
+- **Restore also confirms on a chat already restored this session** (its group is tagged Restored,
+  or a restore of it returned no file name), with its own note. A confirm click within 400 ms of
+  arming is ignored, so a double-click can't skip the note. Snapshots not read yet show as a "N
+  backups still to read…" line.
 - **Import's `character_name` is sanitized** with the ported `sanitize-filename`. Core uses it
   unsanitized as a path segment.
 - **Data Maid finalize waits for the restore queue to go idle,** so a restore still running after

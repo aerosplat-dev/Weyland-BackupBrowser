@@ -229,6 +229,11 @@
     opacity: 0.8;
 }
 
+.wbb-pending {
+    font-style: italic;
+    opacity: 0.7;
+}
+
 .wbb-preview {
     text-align: start;
 }
