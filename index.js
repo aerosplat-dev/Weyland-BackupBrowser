@@ -34,7 +34,7 @@ function errorMessage(error) {
 async function refreshWelcome() {
     try {
         const context = SillyTavern.getContext();
-        if (context.getCurrentChatId() !== undefined || context.chat.length !== 0) return;
+        if (context.getCurrentChatId() !== undefined || !document.querySelector('#chat .welcomePanel')) return;
         await openWelcomeScreen({ force: true });
     } catch (error) {
         console.warn(`${LOG_PREFIX} Couldn't refresh the welcome screen: ${errorMessage(error)}`);

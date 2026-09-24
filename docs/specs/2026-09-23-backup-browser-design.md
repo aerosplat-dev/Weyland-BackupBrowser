@@ -263,8 +263,7 @@ this as an inline note on the row with a confirm-in-place second click. There's 
 Closing the popup after at least one successful restore, without using Open, refreshes the welcome
 panel so the restored chats show up under Recent Chats. It calls the exported
 `openWelcomeScreen({force: true})`, which is what core's private `refreshWelcomeScreen` does, and
-only when `getCurrentChatId() === undefined && chat.length === 0`. That call runs
-`chat.splice(0, 0)` on an already-empty array, so the live chat array is never actually changed.
+only when `getCurrentChatId() === undefined` and a welcome panel is showing in `#chat`. That is exactly when core's own `refreshWelcomeScreen` runs it: force mode then clears only the welcome screen's own greeting and prompt messages, never a real or temporary chat (a temporary chat has no welcome panel).
 
 ## Errors and edge cases
 
