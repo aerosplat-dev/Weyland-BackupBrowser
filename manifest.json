@@ -1,0 +1,13 @@
+{
+    "display_name": "Weyland-BackupBrowser",
+    "loading_order": 500,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "weyland-tavern",
+    "version": "1.0.0",
+    "homePage": "https://github.com/aerosplat-dev/Weyland-BackupBrowser",
+    "auto_update": false,
+    "minimum_client_version": "1.13.3"
+}
