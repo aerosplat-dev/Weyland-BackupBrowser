@@ -1,0 +1,276 @@
+/* Weyland-BackupBrowser. Every selector is scoped to wbb- classes; there are no overlays of our own. */
+
+.popup:has(.wbb-root) .popup-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.wbb-root {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+    text-align: start;
+}
+
+.wbb-notice {
+    margin: 0;
+    padding: 6px 10px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 6px;
+    font-size: calc(var(--mainFontSize) * 0.9);
+}
+
+.wbb-status-box {
+    padding: 20px;
+    text-align: center;
+}
+
+.wbb-body {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 10px;
+    min-height: 0;
+}
+
+.wbb-body[hidden],
+.wbb-status-box[hidden] {
+    display: none;
+}
+
+.wbb-characters-pane {
+    display: flex;
+    flex: 0 0 min(320px, 35%);
+    flex-direction: column;
+    min-height: 0;
+    padding-right: 10px;
+    border-right: 1px solid var(--SmartThemeBorderColor);
+}
+
+.wbb-chats-pane {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+
+.wbb-pane-title,
+.wbb-chats-title {
+    margin: 0 0 6px;
+}
+
+.wbb-character-list,
+.wbb-chats-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.wbb-character {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0 0 4px;
+    padding: 6px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+}
+
+.wbb-character:hover {
+    border-color: var(--SmartThemeBorderColor);
+}
+
+.wbb-character.wbb-selected {
+    border-color: var(--SmartThemeQuoteColor);
+    background-color: var(--black30a);
+}
+
+.wbb-avatar {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.wbb-character-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.wbb-character-name {
+    overflow: hidden;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wbb-character-meta,
+.wbb-snapshot-meta,
+.wbb-progress,
+.wbb-group-persona {
+    font-size: calc(var(--mainFontSize) * 0.85);
+    opacity: 0.8;
+}
+
+.wbb-chats-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.wbb-back {
+    display: none;
+}
+
+.wbb-group {
+    margin: 0 0 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+}
+
+.wbb-group-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 10px;
+    margin-bottom: 6px;
+}
+
+.wbb-group-title {
+    font-weight: bold;
+}
+
+.wbb-status {
+    padding: 1px 8px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 10px;
+    font-size: calc(var(--mainFontSize) * 0.8);
+    overflow-wrap: anywhere;
+}
+
+.wbb-status-deleted {
+    border-color: var(--warning);
+}
+
+.wbb-status-restored {
+    border-color: var(--SmartThemeQuoteColor);
+}
+
+.wbb-snapshot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    padding: 4px 0;
+}
+
+.wbb-snapshot + .wbb-snapshot {
+    border-top: 1px dashed var(--SmartThemeBorderColor);
+}
+
+.wbb-snapshot-meta {
+    flex: 1 1 200px;
+}
+
+.wbb-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.wbb-excerpt {
+    flex: 1 0 100%;
+    font-style: italic;
+    opacity: 0.85;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.wbb-row-status {
+    display: flex;
+    flex: 1 0 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    overflow-wrap: anywhere;
+}
+
+.wbb-row-failed {
+    color: var(--warning);
+}
+
+.wbb-note {
+    flex: 1 0 100%;
+    margin: 4px 0 0;
+    padding: 6px 8px;
+    border-left: 3px solid var(--SmartThemeQuoteColor);
+}
+
+.wbb-older-toggle {
+    margin-top: 4px;
+}
+
+.wbb-older {
+    margin-left: 12px;
+}
+
+.wbb-empty {
+    opacity: 0.8;
+}
+
+.wbb-preview {
+    text-align: start;
+}
+
+.wbb-preview-title {
+    margin: 0 0 10px;
+}
+
+.wbb-message {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--SmartThemeBorderColor);
+}
+
+.wbb-message-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.wbb-message-user .wbb-message-header strong {
+    color: var(--SmartThemeQuoteColor);
+}
+
+.wbb-message-text {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+@media screen and (max-width: 1000px) {
+    .wbb-characters-pane {
+        flex: 1 1 auto;
+        padding-right: 0;
+        border-right: none;
+    }
+
+    .wbb-back {
+        display: inline-flex;
+    }
+
+    /* Keyed on data-view: list every value each rule applies to. */
+    .wbb-root[data-view="characters"] .wbb-chats-pane,
+    .wbb-root[data-view="chats"] .wbb-characters-pane {
+        display: none;
+    }
+}
