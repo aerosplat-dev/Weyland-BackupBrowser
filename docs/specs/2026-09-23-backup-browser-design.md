@@ -108,7 +108,7 @@ it is tested with `node --test`.
 | Unit | Responsibility |
 |---|---|
 | `lib/backupNames.js` | **Pure.** `parseBackupFileName(name)` returns `{key, stamp}` or `null`, anchored on the trailing `_<8 digits>-<6 digits>.jsonl`, so keys may contain `_`. `characterBackupKey(avatar)` ports the server's key rule, including `sanitize-filename`'s rules and 255-byte UTF-8 truncation. `matchBackupsToCharacters(backups, characters)` returns one map entry per character that has backups. A key matching zero characters, or more than one, is dropped. |
-| `lib/dataMaidClient.js` | **The only module that talks to Data Maid.** `openSession()` calls report and keeps only `chatBackups` and the token. `fetchBackupText(session, hash, signal)` calls view. On a 403 it re-reports once, updates the session token, and retries the same hash. A 404 becomes a typed "gone" result. `closeSession(session)` calls finalize. There is no delete function. |
+| `lib/dataMaidClient.js` | **The only module that talks to Data Maid.** `openSession()` calls report and keeps only `chatBackups` and the token. `fetchBackup(session, hash, signal)` calls view, resolving to the backup as a Blob, or `gone`. On a 403 it re-reports once, updates the session token, and retries the same hash. A 404 becomes a typed "gone" result. `closeSession(session)` calls finalize. There is no delete function. |
 | `lib/chatSummary.js` | **Pure.** `summarizeBackup(text)` returns `{userName, characterName, createDate, chatId, messageCount, lastMessage: {name, excerpt, sendDate}}`. `chatId` is `chat_metadata.integrity`, falling back to `create_date` when there is no integrity. The excerpt is the last ~300 characters. The full text is never kept. A missing or unparseable header returns `null` ("unreadable"). |
 | `lib/grouping.js` | **Pure.** `groupSnapshots(snapshots, existingChats, restored)` groups summarized snapshots by `chatId`. Groups are ordered newest-latest-snapshot first, and snapshots within a group newest first. Each group gets a status: `restored` (a restore this session, with its file name), else `exists` (a current chat with that `chatId`, with its file name), else `deleted`. |
 | `lib/existingChats.js` | `listCurrentChats(avatar)` calls `/api/characters/chats {avatar_url, simple: true}` (the response `{error: true}` means none), then `/api/chats/get` for each file to read its header's `chatId`. It returns `[{fileName, chatId}]`. It never calls `/api/chats/get` unless the listing returned files. |
@@ -202,7 +202,7 @@ in order: speaker, send date, then the message text.
 Clicking **Restore** enqueues the snapshot, and the row shows "Queued…", then "Restoring…". Each
 job runs these steps:
 
-1. Download the text through `fetchBackupText`.
+1. Download the text through `fetchBackup`.
 2. **Snapshot the character's chat list** (`/api/characters/chats`, `simple`).
 3. **Make sure the character's chats folder exists.** Call `/api/chats/get {avatar_url}` with no
    `file_name`. Core creates the folder if it's missing and returns `{}`. Without this, import
@@ -359,13 +359,16 @@ precedence over the sections above where they differ.
 - **Unknown status also confirms.** While a character's current chats are still loading, or if
   loading failed, Restore asks for the same inline confirmation as **Exists**.
 - **Restore also confirms on a chat already restored this session** (its group is tagged Restored,
-  or a restore of it returned no file name), with its own note. A confirm click within 400 ms of
+  or a restore of it returned no file name), with its own note. It also confirms while another
+  snapshot of the same chat is queued or restoring. A confirm click within 400 ms of
   arming is ignored, so a double-click can't skip the note. Snapshots not read yet show as a "N
   backups still to read…" line.
 - **Import's `character_name` is sanitized** with the ported `sanitize-filename`. Core uses it
   unsanitized as a path segment.
-- **Data Maid finalize waits for the restore queue to go idle,** so a restore still running after
-  the popup closes keeps a valid token.
+- **One Data Maid session is shared by the whole page** (`lib/sessionManager.js`). Every popup
+  reuses it: reopening re-runs the report and updates its token in place, so restores queued in an
+  earlier popup keep a valid token. It is finalized only when the restore queue is idle and no
+  popup is open.
 - **Core modules are imported by absolute URL** (`/script.js`, `/scripts/welcome-screen.js`).
   Core's `index.html` sets `<base href="/">`, so these are the same module instances, and the
   import works from either extension tree.

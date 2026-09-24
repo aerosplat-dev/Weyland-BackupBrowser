@@ -7,6 +7,7 @@ import { createDataMaidClient } from './lib/dataMaidClient.js';
 import { createChatsApi } from './lib/existingChats.js';
 import { openRestoredChat } from './lib/openChat.js';
 import { createRestoreQueue, restoreSnapshot } from './lib/restore.js';
+import { createSessionManager } from './lib/sessionManager.js';
 import { createSummaryLoader } from './lib/summaryLoader.js';
 import { openBackupBrowser } from './lib/ui/browserPopup.js';
 import { installWelcomeButton } from './lib/ui/welcomeButton.js';
@@ -25,10 +26,7 @@ const restoreQueue = createRestoreQueue();
 const restoredChats = new Map();
 
 let browserOpen = false;
-
-function errorMessage(error) {
-    return error instanceof Error ? error.message : String(error);
-}
+const sessions = createSessionManager({ dataMaid, restoreQueue, isBrowserOpen: () => browserOpen });
 
 /** Rebuilds the welcome panel so restored chats show under Recent Chats. */
 async function refreshWelcome() {
@@ -36,8 +34,8 @@ async function refreshWelcome() {
         const context = SillyTavern.getContext();
         if (context.getCurrentChatId() !== undefined || !document.querySelector('#chat .welcomePanel')) return;
         await openWelcomeScreen({ force: true });
-    } catch (error) {
-        console.warn(`${LOG_PREFIX} Couldn't refresh the welcome screen: ${errorMessage(error)}`);
+    } catch {
+        console.warn(`${LOG_PREFIX} Couldn't refresh the welcome screen.`);
     }
 }
 
@@ -67,6 +65,7 @@ async function handleOpenBrowser() {
             summaryLoader,
             restoreQueue,
             restoredChats,
+            acquireSession: (signal) => sessions.acquire(signal),
             restore: ({ session, character, snapshot }) => restoreSnapshot({
                 dataMaid,
                 chatsApi,
@@ -79,11 +78,12 @@ async function handleOpenBrowser() {
             openChat,
             refreshWelcome,
         });
-    } catch (error) {
-        console.error(`${LOG_PREFIX} The backup browser failed: ${errorMessage(error)}`);
-        toastr.error(errorMessage(error), MODULE_NAME);
+    } catch {
+        console.error(`${LOG_PREFIX} The backup browser failed.`);
+        toastr.error(SillyTavern.getContext().t`The backup browser failed. Try again.`, MODULE_NAME);
     } finally {
         browserOpen = false;
+        void sessions.release();
     }
 }
 
